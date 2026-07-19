@@ -1,0 +1,5 @@
+SIGNET_SKILL.md
+.env
+.env.local
+node_modules/
+.next/

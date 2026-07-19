@@ -1,0 +1,19 @@
+# Dependencies (fetched via `forge install`, not vendored)
+lib/
+
+# Compiler files
+cache/
+out/
+
+# Ignores development broadcast logs
+broadcast/*/31337/
+broadcast/*/10143/
+broadcast/*/*/dry-run/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+.claude/
