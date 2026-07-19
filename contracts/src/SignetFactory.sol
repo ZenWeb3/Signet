@@ -18,7 +18,9 @@ contract SignetFactory {
         uint256 gracePeriod,
         string calldata farewell
     ) external returns (address signet) {
-        bytes32 salt = keccak256(abi.encodePacked(msg.sender, block.timestamp));
+        // Nonce-based salt (not timestamp) so two calls from the same owner in the
+        // same block don't collide on the same CREATE2 address.
+        bytes32 salt = keccak256(abi.encodePacked(msg.sender, signetsByOwner[msg.sender].length));
         signet = address(
             new Signet{salt: salt}(msg.sender, beneficiary, label, checkInInterval, gracePeriod, farewell)
         );

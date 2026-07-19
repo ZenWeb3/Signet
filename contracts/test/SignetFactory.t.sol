@@ -75,4 +75,15 @@ contract SignetFactoryTest is Test {
 
         assertTrue(s1 != s2);
     }
+
+    function test_CreateSignet_SameBlockDoesNotCollide() public {
+        vm.startPrank(alice);
+        address s1 = factory.createSignet(beneficiary, "Kin", 30 days, 7 days, "bye");
+        // No warp — same block.timestamp as first call.
+        address s2 = factory.createSignet(beneficiary, "Kin", 30 days, 7 days, "bye");
+        vm.stopPrank();
+
+        assertTrue(s1 != s2);
+        assertEq(factory.getSignetsForOwner(alice).length, 2);
+    }
 }
