@@ -25,71 +25,86 @@ import {
   KeyIcon,
   Bitcoin01Icon,
   Cursor01Icon,
+  Home01Icon,
+  Message01Icon,
+  Time01Icon,
+  Settings01Icon,
+  Analytics01Icon,
+  Search01Icon,
 } from "@hugeicons/core-free-icons";
+import { ArrowRightIcon } from "lucide-react";
 import { useMySignets } from "@/lib/hooks";
 import { monadTestnet } from "@/lib/chain";
 import { FACTORY_ADDRESS } from "@/lib/contracts";
 import { truncateAddress } from "@/lib/format";
+import SignetNavbar from "@/components/SignetNavbar";
+import Hero from "@/components/sections/hero/default";
+import FAQ from "@/components/sections/faq/default";
+import CTA from "@/components/sections/cta/default";
+import FooterSection from "@/components/sections/footer/default";
+import { Badge } from "@/components/ui/badge";
+import { MockupFrame, Mockup } from "@/components/ui/mockup";
+import Glow from "@/components/ui/glow";
 
 const bigFeatures = [
   {
-    title: "Non-custodial by design",
-    body: "Every vault is its own contract. Signet never holds keys, never routes funds, never touches your beneficiary until you want it to.",
+    title: "You hold the keys",
+    body: "Every vault is a smart contract you deploy. Signet has no admin, no shared pool, no way to reach in. Your beneficiary doesn't even know they're on it until they need to be.",
   },
   {
-    title: "Trustless successorship",
-    body: "Check-in intervals, grace periods and beneficiaries are enforced by immutable Solidity — not a company promise.",
+    title: "The rules live in code",
+    body: "Interval, grace period, beneficiary. All set when you deploy. All enforced by the contract. We can't change them for you. We can't change them against you either.",
   },
   {
-    title: "Fits right into your kin",
-    body: "Any EVM address can inherit — a wallet, a multisig, a Safe. No bespoke integration required.",
+    title: "Any wallet on the other end",
+    body: "Point it at an address. That's it. MetaMask, Ledger, a Safe, another contract — anything that can sign a transaction can inherit.",
   },
   {
-    title: "Message on release",
-    body: "Attach a farewell that only decrypts when your beneficiary claims. Sealed off-chain, unlocked on-chain.",
+    title: "Say something first",
+    body: "Attach a note. It's encrypted on your machine before it leaves. The key that decrypts it only surfaces once the claim goes through.",
   },
 ];
 
 const grid = [
   {
     icon: ShieldIcon,
-    title: "Reentrancy safe",
-    body: "Withdraw, withdrawToken and claim are all guarded.",
+    title: "Guarded withdrawals",
+    body: "Every path that moves money is reentrancy-locked.",
   },
   {
     icon: LockIcon,
-    title: "Immutable",
-    body: "No upgradeability, no selfdestruct — deployed as-is.",
+    title: "Deployed once",
+    body: "No admin key, no proxy, no self-destruct. What ships is what runs.",
   },
   {
     icon: Wallet01Icon,
-    title: "Own your vault",
-    body: "Funds sit in your contract. Signet never takes control.",
+    title: "Funds don't leave the vault",
+    body: "They sit in the contract you own. Signet can't route them out.",
   },
   {
     icon: Clock01Icon,
-    title: "Configurable timing",
-    body: "Intervals from hours to years, and a grace period to match.",
+    title: "Set your own clock",
+    body: "Intervals from hours to years. Grace period on top.",
   },
   {
     icon: UserIcon,
-    title: "Any beneficiary",
-    body: "Any EVM address — a wallet, a multisig, or a Safe.",
+    title: "Any address inherits",
+    body: "Wallet, Safe, another contract, you choose. No integration needed.",
   },
   {
     icon: RefreshIcon,
-    title: "Change your mind",
-    body: "Rotate beneficiary, extend timers, or withdraw at any time.",
+    title: "Nothing is locked in",
+    body: "Rotate the beneficiary, extend the clock, pull the money out. Anytime.",
   },
   {
     icon: GlobalIcon,
-    title: "Public wall",
-    body: "Opt-in feed of vaults that have gone silent, live on-chain.",
+    title: "A public wall",
+    body: "Opt-in feed of vaults that have gone quiet, live on chain.",
   },
   {
     icon: Mail01Icon,
-    title: "Farewell payload",
-    body: "Optional message revealed only on successful claim.",
+    title: "One last message",
+    body: "Encrypted before it leaves your machine. Unsealed on claim.",
   },
 ];
 
@@ -97,93 +112,93 @@ const testimonials = [
   {
     name: "Aria Chen",
     handle: "@ariachen",
-    body: "signet is the first successor vault that doesn't ask me to trust a company. the contract is the promise.",
+    body: "spent an hour reading the contracts before i put anything in. small. legible. exactly what i wanted.",
   },
   {
     name: "Marcus Weld",
     handle: "@mweld",
-    body: "set up in five minutes. my beneficiary doesn't even know they're on it — until they need to be.",
+    body: "took me five minutes to set up. my sister has no idea she's the beneficiary. that's kind of the point.",
   },
   {
     name: "Priya Ravel",
     handle: "@priyar",
-    body: "the grace period is the killer feature. life happens, and @signet gives you room to come back.",
+    body: "the grace period matters more than i expected. took a two-week trip and didn't panic once.",
   },
   {
     name: "Julien Ostrom",
     handle: "@julostrm",
-    body: "finally an on-chain dead-man's switch that doesn't reek of a rug. everything's verifiable.",
+    body: "on-chain dead-man's switch that isn't a rug. finally.",
   },
   {
     name: "Nadia Karpov",
     handle: "@nadiakv",
-    body: "moved a chunk of treasury into a @signet vault last week. sleeping better already.",
+    body: "moved a chunk of our cold storage into a signet vault as a backstop. cheaper than a lawyer.",
   },
   {
     name: "Toma Ives",
     handle: "@tomaives",
-    body: "the wall is a strangely beautiful thing. quiet chapel of unclaimed vaults.",
+    body: "the wall is haunting. quiet, unopened vaults sitting on chain.",
   },
   {
     name: "Sana Delaroche",
     handle: "@sanadel",
-    body: "@signet is what estate planning looks like when the paperwork is a smart contract.",
+    body: "estate planning where the paperwork is a contract you can read. that's the pitch. that's the whole pitch.",
   },
   {
     name: "Idris Halevy",
     handle: "@idrishh",
-    body: "attaching a farewell message pushed me over the edge. this is the whole thing done right.",
+    body: "attaching a message is what pushed me from thinking about it to actually deploying one. small thing that matters.",
   },
   {
     name: "Zoe Marchetti",
     handle: "@zmarc",
-    body: "rotated my beneficiary in one tx. no lawyers, no forms, no company in the middle.",
+    body: "rotated my beneficiary in one tx. no forms, no notary. felt weird how easy it was.",
   },
   {
     name: "Rafi Okonjo",
     handle: "@rafiokon",
-    body: "auditor here — spent an afternoon reading the contracts. small, tight, no funny business.",
+    body: "auditor. ~400 lines. no admin key. does what it says.",
   },
 ];
 
 const faqs = [
   {
-    q: "What happens if I lose access to my wallet?",
-    a: "If you can't check in, the clock keeps counting. Once your interval plus grace period elapses, your beneficiary can claim the vault.",
+    q: "What happens if I lose my wallet?",
+    a: "The clock keeps counting. Once the interval and grace period both pass, the beneficiary you named can claim the vault.",
   },
   {
-    q: "Can Signet be shut down?",
-    a: "No. The factory and vault contracts are immutable. There is no upgradeability, no admin key, no selfdestruct path.",
+    q: "Can Signet shut this down?",
+    a: "No. The factory and vault contracts are immutable — no admin key, no upgrade path, no self-destruct. If Signet disappeared tomorrow, the vaults would keep working.",
   },
   {
     q: "What if my beneficiary loses their wallet?",
-    a: "You can rotate the beneficiary at any time before a claim is initiated. If you never do, and neither of you can claim, the vault sits forever.",
+    a: "You can rotate them any time before a claim starts. If nobody can claim and nobody rotates, the funds sit until someone can.",
   },
   {
-    q: "Which chains are supported?",
-    a: "Signet is live on Monad testnet today. Mainnet Monad deploys with the network, and additional EVM chains are in progress.",
+    q: "Which chains?",
+    a: "Monad testnet today. Mainnet Monad when the chain launches. Other EVM chains after that.",
   },
   {
     q: "Does Signet see my message?",
-    a: "The farewell payload is encrypted off-chain. Only a successful claim reveals the decryption key, and only to the beneficiary.",
+    a: "No. It's encrypted on your device before it leaves. The key only surfaces when the beneficiary's claim settles on chain.",
   },
 ];
 
 const stepper = [
   {
     icon: DashboardSquare01Icon,
-    title: "Configure the seal",
-    body: "Set your check-in interval, grace period and beneficiary in one screen.",
+    title: "Set up the vault",
+    body: "Interval, grace period, beneficiary. One screen. One transaction to deploy.",
   },
   {
     icon: Edit02Icon,
-    title: "Attach a farewell",
-    body: "Optional. Sealed off-chain, unlocked only when your kin claims.",
+    title: "Write something",
+    body: "Optional. Encrypted locally. Only your beneficiary sees it, and only after they claim.",
   },
   {
     icon: PaintBoardIcon,
-    title: "Fund and forget",
-    body: "Deposit MON or any ERC-20. Withdraw or top up whenever you like.",
+    title: "Fund it, then live",
+    body: "Deposit MON or any ERC-20. Top up whenever. The rest is checking in every so often.",
   },
 ];
 
@@ -223,105 +238,48 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 bg-bg text-fg overflow-x-hidden">
-      {/* NAV */}
-      <nav className="sticky top-0 z-40 w-full border-b border-border/60 bg-bg/70 backdrop-blur-xl">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-base font-semibold tracking-tight">
-              Signet
-            </span>
-          </Link>
-          <div className="hidden md:flex items-center gap-8 text-sm text-muted">
-            <a href="#features" className="hover:text-fg transition-colors">
-              Features
-            </a>
-            <a href="#security" className="hover:text-fg transition-colors">
-              Security
-            </a>
-            <a href="#network" className="hover:text-fg transition-colors">
-              Network
-            </a>
-            <a href="#faq" className="hover:text-fg transition-colors">
-              FAQ
-            </a>
-            <Link href="/wall" className="hover:text-fg transition-colors">
-              Wall
-            </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => login()}
-              className="hidden sm:inline text-sm text-muted hover:text-fg transition-colors px-2"
-            >
-              Sign in
-            </button>
-            <button
-              onClick={() => login()}
-              className="rounded-lg bg-fg px-3.5 py-2 text-sm font-medium text-bg hover:opacity-90 transition-opacity"
-            >
-              Launch app
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* NAV — floating */}
+      <SignetNavbar />
 
-      {/* HERO */}
-      <section className="relative w-full overflow-hidden">
-        <div className="max-w-6xl mx-auto w-full px-6 pt-28 pb-40 flex flex-col items-center text-center gap-8 relative z-10">
-          <a
-            href="#faq"
-            className="pill inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium text-muted hover:text-fg transition-colors reveal"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            Live on Monad testnet
-            <span className="text-fg">Read more →</span>
-          </a>
-          <h1 className="hero-heading max-w-5xl text-6xl sm:text-7xl lg:text-[92px] font-semibold leading-[0.95] reveal">
-            The vault that pays out
-            <br />
-            when you go silent.
-          </h1>
-          <p className="max-w-xl text-base sm:text-lg text-muted leading-relaxed reveal">
-            A trustless dead-man&apos;s switch on-chain. Deposit funds, set a
-            check-in interval, name a beneficiary. Stay active and it&apos;s
-            yours. Go silent, and it&apos;s theirs.
-          </p>
-          <div className="flex items-center gap-3 mt-2 reveal">
-            <button
-              onClick={() => login()}
-              className="rounded-lg bg-fg px-5 py-2.5 text-sm font-medium text-bg hover:opacity-90 transition-opacity"
-            >
-              Get started
-            </button>
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg border border-border bg-surface px-5 py-2.5 text-sm font-medium text-fg hover:bg-fg/[0.06] transition-colors"
-            >
-              Github
+      <Hero
+        title={
+          <>
+            The people you love shouldn&apos;t <em className="italic font-normal">lose</em> what you leave behind.
+          </>
+        }
+        description="Keep your vault active with check-ins. If they stop, ownership passes to your beneficiary. Exactly as programmed."
+        badge={
+          <Badge variant="outline" className="animate-appear rounded-full">
+            <span className="text-muted-foreground">Live on Monad testnet</span>
+            <a href="#faq" className="flex items-center gap-1">
+              Read more
+              <ArrowRightIcon className="size-3" />
             </a>
+          </Badge>
+        }
+        buttons={[
+          { href: "#faq", text: "Get started", variant: "default" },
+          {
+            href: "https://github.com/zenweb3/signet",
+            text: "Github",
+            variant: "glow",
+          },
+        ]}
+        mockup={
+          <div className="animate-appear opacity-0 delay-700 w-full">
+            <DashboardMock />
           </div>
-        </div>
-
-        {/* Dashboard mockup with brighter glow behind */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 -mt-16 reveal-slow parallax-hero">
-          <DashboardMock />
-        </div>
-        <div
-          aria-hidden
-          className="hero-glow pointer-events-none absolute left-1/2 -translate-x-1/2 top-[380px] w-[1400px] h-[700px] -z-0"
-        />
-      </section>
+        }
+      />
 
 
       {/* BIG 2x2 FEATURE CARDS */}
       <section id="features" className="w-full pt-24 pb-24">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.02] max-w-3xl mb-16 reveal">
-            A better way to
+            What happens
             <br />
-            pass it on.
+            after you don&apos;t.
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {bigFeatures.map((f, i) => (
@@ -351,13 +309,14 @@ export default function Home() {
       >
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center flex flex-col items-center gap-6 reveal">
           <h2 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.02]">
-            Trust you can verify.
+            Short enough to
             <br />
-            And build on.
+            read in one sitting.
           </h2>
           <p className="text-muted max-w-lg mx-auto">
-            Signet ships with audited primitives, immutable contracts and a
-            public wall so anyone can check that the seal is intact.
+            The vault contract is about 400 lines. No admin key. No proxy. No
+            self-destruct. If you want to trust it with money, you should be
+            able to read it first — and you can.
           </p>
         </div>
         <div className="corona" style={{ top: "460px" }} />
@@ -368,11 +327,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20 reveal">
             <h2 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.02]">
-              Make the right impression.
+              Set it up in three screens.
             </h2>
             <p className="text-muted max-w-lg mx-auto mt-5">
-              Give your beneficiary a moment that feels intentional, not
-              administrative.
+              So when someone opens this in a year, or ten, there&apos;s
+              something on the other side that feels like you meant it.
             </p>
           </div>
           <div className="grid lg:grid-cols-[minmax(280px,360px)_1fr] gap-10 items-start reveal">
@@ -439,9 +398,7 @@ export default function Home() {
       <section className="w-full py-32 border-t border-border/60">
         <div className="max-w-6xl mx-auto px-6 flex flex-col items-center">
           <h2 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-semibold text-center leading-[1.02] max-w-2xl mb-16 reveal">
-            Everything you need.
-            <br />
-            Nothing you don&apos;t.
+            Small, on purpose.
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 w-full reveal">
             {grid.map((item) => (
@@ -554,77 +511,43 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-6">
             <span className="text-xs font-semibold tracking-widest uppercase text-muted">
-              Assurance
+              What you can check
             </span>
             <h3 className="text-3xl sm:text-4xl font-semibold hero-heading leading-tight">
-              Written to be reviewed. Deployed to be verified.
+              Short. Immutable. Public.
             </h3>
             <p className="text-muted max-w-md">
-              The factory and vault contracts are immutable, open-source and
-              covered by external audit. Every deployment is verified on-chain
-              and reproducible from source.
+              The vault contract is small enough to read before you trust it
+              with anything. No admin key. No upgrade path. Live on Monad
+              testnet, source-verified on the block explorer.
             </p>
             <div className="flex flex-col gap-3 mt-4">
               <AssuranceRow
-                title="Audit"
-                subtitle="Independent review — full report on Github"
+                title="Immutable by design"
+                subtitle="No admin, no proxy, no self-destruct in the contracts"
               />
               <AssuranceRow
-                title="Formal analysis"
-                subtitle="Invariants proven with Halmos & Certora"
+                title="Source-verified on chain"
+                subtitle="Read the factory and vaults on the Monad explorer"
               />
               <AssuranceRow
-                title="Bug bounty"
-                subtitle="Live on Immunefi — up to $250k"
-              />
-              <AssuranceRow
-                title="Verified source"
-                subtitle="Every deployment reproducible & verified"
+                title="Open source"
+                subtitle="Every line on Github. Roughly 400 to read"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="w-full py-32 border-t border-border/60">
-        <div className="max-w-3xl mx-auto px-6 reveal">
-          <h2 className="hero-heading text-4xl sm:text-5xl lg:text-6xl font-semibold text-center leading-[1.02] mb-16">
-            Questions and Answers
-          </h2>
-          <div className="flex flex-col divide-y divide-border border-y border-border">
-            {faqs.map((f, i) => {
-              const open = openFaq === i;
-              return (
-                <button
-                  key={f.q}
-                  onClick={() => setOpenFaq(open ? null : i)}
-                  className="text-left py-5 flex flex-col gap-3 group"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm sm:text-base font-medium text-fg">
-                      {f.q}
-                    </span>
-                    <HugeiconsIcon
-                      icon={ArrowDown01Icon}
-                      size={18}
-                      strokeWidth={1.5}
-                      className={`text-muted transition-transform ${open ? "rotate-180 text-fg" : ""}`}
-                    />
-                  </div>
-                  <div
-                    className={`grid transition-all duration-300 ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
-                  >
-                    <p className="text-sm text-muted leading-relaxed pr-8 overflow-hidden">
-                      {f.a}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <div id="faq">
+        <FAQ
+          title="Questions and answers"
+          items={faqs.map((f) => ({
+            question: f.q,
+            answer: <p className="text-muted-foreground mb-4 max-w-[640px] text-balance">{f.a}</p>,
+          }))}
+        />
+      </div>
 
       {/* CONTRACT PILL */}
       <section className="w-full py-16">
@@ -654,61 +577,51 @@ export default function Home() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="relative w-full py-40 overflow-hidden border-t border-border/60">
-        <div className="max-w-3xl mx-auto px-6 text-center relative z-10 flex flex-col items-center gap-8 reveal">
-          <h2 className="hero-heading text-5xl sm:text-6xl lg:text-7xl font-semibold leading-[0.95]">
-            Write yours before
-            <br />
-            the silence does.
-          </h2>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => login()}
-              className="rounded-lg bg-fg px-6 py-3 text-sm font-medium text-bg hover:opacity-90 transition-opacity"
-            >
-              Get started
-            </button>
-            <Link
-              href="/wall"
-              className="rounded-lg border border-border bg-surface px-6 py-3 text-sm font-medium text-fg hover:bg-fg/[0.06] transition-colors"
-            >
-              View the wall
-            </Link>
-          </div>
-        </div>
-        <div
-          aria-hidden
-          className="hero-glow pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-0 w-[1400px] h-[600px] -z-0"
-        />
-      </section>
+      <CTA
+        title="Write yours before the silence does."
+        buttons={[
+          { href: "#faq", text: "Get started", variant: "default" },
+          { href: "/wall", text: "View the wall", variant: "glow" },
+        ]}
+      />
 
       {/* FOOTER */}
-      <footer className="w-full border-t border-border/60">
-        <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold">Signet</span>
-            <span className="text-xs text-muted">
-              Successor vaults on Monad
-            </span>
-          </div>
-          <div className="flex items-center gap-6 text-xs text-muted">
-            <a
-              href={explorerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-fg transition-colors font-mono"
-            >
-              Factory ↗
-            </a>
-            <Link href="/wall" className="hover:text-fg transition-colors">
-              Wall
-            </Link>
-            <a href="#faq" className="hover:text-fg transition-colors">
-              FAQ
-            </a>
-          </div>
-        </div>
-      </footer>
+      <FooterSection
+        logo={null}
+        name="Signet"
+        columns={[
+          {
+            title: "Product",
+            links: [
+              { text: "Features", href: "#features" },
+              { text: "Security", href: "#security" },
+              { text: "Network", href: "#network" },
+              { text: "The Wall", href: "/wall" },
+            ],
+          },
+          {
+            title: "Contract",
+            links: [
+              { text: "Factory on Explorer", href: explorerUrl },
+              { text: "Github", href: "https://github.com" },
+              { text: "FAQ", href: "#faq" },
+            ],
+          },
+          {
+            title: "Resources",
+            links: [
+              { text: "Monad testnet", href: "https://testnet.monadexplorer.com" },
+              { text: "Public wall", href: "/wall" },
+            ],
+          },
+        ]}
+        copyright={`© ${new Date().getFullYear()} Signet · Successor vaults on Monad`}
+        policies={[
+          { text: "Privacy", href: "#" },
+          { text: "Terms", href: "#" },
+        ]}
+        showModeToggle={false}
+      />
     </div>
   );
 }
@@ -1042,89 +955,256 @@ function FormField({ label, value, mono }: { label: string; value: string; mono?
 }
 
 function DashboardMock({ compact }: { compact?: boolean }) {
+  const nav = [
+    { icon: Home01Icon, label: "Overview", active: true },
+    { icon: UserIcon, label: "Beneficiary" },
+    { icon: Message01Icon, label: "Farewell" },
+    { icon: Time01Icon, label: "Timeline" },
+    { icon: Analytics01Icon, label: "Activity" },
+    { icon: Settings01Icon, label: "Settings" },
+  ];
+
+  const bars = [
+    { h: 42, color: "muted" },
+    { h: 58, color: "muted" },
+    { h: 50, color: "muted" },
+    { h: 78, color: "brand-soft" },
+    { h: 45, color: "muted" },
+    { h: 92, color: "brand" },
+    { h: 68, color: "brand-soft" },
+    { h: 30, color: "muted" },
+    { h: 54, color: "muted" },
+    { h: 66, color: "brand-soft" },
+    { h: 74, color: "muted" },
+    { h: 82, color: "brand-soft" },
+  ];
+
+  const barBg = (c: string) => {
+    if (c === "brand")
+      return "linear-gradient(to top, rgba(251,146,60,0.4), #fb923c)";
+    if (c === "brand-soft")
+      return "linear-gradient(to top, rgba(251,146,60,0.15), rgba(253,186,116,0.75))";
+    return "linear-gradient(to top, rgba(250,250,250,0.06), rgba(250,250,250,0.28))";
+  };
+
   return (
-    <div className="rounded-2xl border border-border bg-surface/70 backdrop-blur p-6 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.9)]">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-accent to-accent-soft/50" />
-          <span className="text-sm font-medium">0x9448…ECa7</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-6 text-sm text-muted">
-          <span className="text-fg">Overview</span>
-          <span>Beneficiary</span>
-          <span>Message</span>
-          {!compact && <span>Settings</span>}
-        </div>
-        <div className="rounded-lg border border-border bg-bg/60 px-3 py-1.5 text-xs text-muted">
-          Search…
-        </div>
-      </div>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-2xl font-semibold">Vault</h3>
-        <button className="rounded-lg bg-fg text-bg px-3 py-1.5 text-xs font-medium">
-          Check in
-        </button>
-      </div>
-      <div
-        className={`grid gap-3 mb-6 ${compact ? "grid-cols-2" : "grid-cols-2 lg:grid-cols-4"}`}
-      >
-        <StatTile label="Deposited" value="12.40 MON" delta="+2.10 last week" />
-        <StatTile label="Interval" value="90 days" delta="Resets on check-in" />
-        {!compact && (
-          <StatTile label="Grace" value="14 days" delta="After interval" />
-        )}
-        <StatTile
-          label="Next check-in"
-          value="61d 04h"
-          delta="Silent in 75d"
-          positive
-        />
-      </div>
-      <div
-        className={`grid gap-3 ${compact ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"}`}
-      >
-        <div
-          className={`${compact ? "" : "lg:col-span-2"} rounded-xl border border-border bg-bg/40 p-5`}
+    <div
+      className="rounded-2xl border border-border p-2 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.95)]"
+      style={{ background: "#050507" }}
+    >
+      <div className="flex gap-2">
+        {/* Sidebar */}
+        <aside
+          className="hidden sm:flex flex-col gap-1 shrink-0 rounded-xl p-3"
+          style={{ width: compact ? 168 : 200, background: "#0a0a0d" }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-semibold">Activity</span>
-            <span className="text-xs text-muted">Last 12 months</span>
-          </div>
-          <div className="flex items-end justify-between h-40 gap-2">
-            {[40, 60, 50, 80, 45, 90, 70, 30, 55, 65, 75, 85].map((h, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-t bg-gradient-to-t from-fg/10 to-fg/40"
-                style={{ height: `${h}%` }}
-              />
-            ))}
-          </div>
-        </div>
-        {!compact && (
-          <div className="rounded-xl border border-border bg-bg/40 p-5">
-            <span className="text-sm font-semibold">Recent check-ins</span>
-            <p className="text-xs text-muted mb-4">6 in the last 6 months.</p>
-            <div className="flex flex-col gap-3">
-              {["Mar 14", "Feb 12", "Jan 09", "Dec 08"].map((d) => (
-                <div
-                  key={d}
-                  className="flex items-center justify-between text-xs"
-                >
-                  <div className="flex items-center gap-2">
-                    <HugeiconsIcon
-                      icon={CheckmarkCircle01Icon}
-                      size={14}
-                      className="text-accent"
-                    />
-                    <span className="text-fg">{d}</span>
-                  </div>
-                  <span className="text-muted">reset · +90d</span>
-                </div>
-              ))}
+          <div className="flex items-center gap-2 px-2 py-2 mb-2">
+            <div className="h-7 w-7 rounded-md bg-linear-to-br from-brand-soft to-brand-fg flex items-center justify-center text-bg text-[11px] font-bold">
+              S
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-xs font-semibold text-fg">Signet</span>
+              <span className="text-[10px] text-muted">Vault #0142</span>
             </div>
           </div>
-        )}
+          {nav.map((n) => (
+            <div
+              key={n.label}
+              className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-colors ${
+                n.active
+                  ? "bg-fg/[0.06] text-fg"
+                  : "text-muted hover:text-fg"
+              }`}
+            >
+              <HugeiconsIcon
+                icon={n.icon}
+                size={16}
+                strokeWidth={1.5}
+                className={n.active ? "text-fg" : "text-muted"}
+              />
+              <span>{n.label}</span>
+              {n.active && (
+                <span
+                  className="ml-auto h-1.5 w-1.5 rounded-full"
+                  style={{ background: "#fb923c" }}
+                />
+              )}
+            </div>
+          ))}
+          <div className="mt-auto rounded-lg border border-border p-3 mt-4">
+            <div className="text-[11px] text-muted mb-1">Beneficiary</div>
+            <div className="flex items-center gap-2">
+              <div className="h-6 w-6 rounded-full bg-linear-to-br from-brand-fg to-brand-soft/50" />
+              <span className="text-[11px] font-mono text-fg">
+                0xE1a7…c9F2
+              </span>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main
+          className="flex-1 rounded-xl p-5"
+          style={{ background: "#0a0a0d" }}
+        >
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2">
+              <HugeiconsIcon
+                icon={Search01Icon}
+                size={14}
+                className="text-muted"
+              />
+              <input
+                readOnly
+                value="Search vault activity…"
+                className="text-xs text-muted bg-transparent outline-none w-56"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="rounded-lg border border-border bg-bg/40 px-2.5 py-1.5 text-[11px] text-muted">
+                Jan 20 – Feb 09
+              </button>
+              <button
+                className="rounded-lg px-3 py-1.5 text-[11px] font-medium text-bg"
+                style={{
+                  background: "linear-gradient(180deg, #fdba74, #fb923c)",
+                  boxShadow: "0 8px 24px -6px rgba(251,146,60,0.6)",
+                }}
+              >
+                Check in
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-baseline justify-between mb-5">
+            <div>
+              <h3 className="text-2xl font-semibold text-fg">Overview</h3>
+              <p className="text-xs text-muted">Vault sealed 214 days ago.</p>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ background: "#22c55e" }}
+              />
+              <span className="text-[11px] text-muted">Active</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+            <StatTile
+              label="Deposited"
+              value="12.40 MON"
+              delta="+2.10 last week"
+            />
+            <StatTile
+              label="Interval"
+              value="90 days"
+              delta="Resets on check-in"
+            />
+            {!compact && (
+              <StatTile
+                label="Grace"
+                value="14 days"
+                delta="After interval"
+              />
+            )}
+            <StatTile
+              label="Next check-in"
+              value="61d 04h"
+              delta="Silent in 75d"
+              positive
+            />
+          </div>
+
+          <div
+            className={`grid gap-3 ${compact ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"}`}
+          >
+            <div
+              className={`${compact ? "" : "lg:col-span-2"} rounded-xl border border-border p-5`}
+              style={{ background: "#050507" }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold">Check-in cadence</span>
+                  <span className="text-[11px] text-muted">
+                    Monthly, last 12 months
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-[10px] text-muted">
+                  <LegendDot color="#fb923c" label="On-time" />
+                  <LegendDot color="rgba(253,186,116,0.75)" label="Grace" />
+                  <LegendDot color="rgba(250,250,250,0.28)" label="Idle" />
+                </div>
+              </div>
+              <div className="flex items-end justify-between h-40 gap-2">
+                {bars.map((b, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 rounded-t"
+                    style={{
+                      height: `${b.h}%`,
+                      background: barBg(b.color),
+                    }}
+                  />
+                ))}
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-muted mt-2">
+                {"J F M A M J J A S O N D".split(" ").map((m, i) => (
+                  <span key={i} className="flex-1 text-center">
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
+            {!compact && (
+              <div
+                className="rounded-xl border border-border p-5"
+                style={{ background: "#050507" }}
+              >
+                <span className="text-sm font-semibold">Recent check-ins</span>
+                <p className="text-[11px] text-muted mb-4">
+                  6 in the last 6 months.
+                </p>
+                <div className="flex flex-col gap-3">
+                  {[
+                    { d: "Mar 14", note: "reset · +90d" },
+                    { d: "Feb 12", note: "reset · +90d" },
+                    { d: "Jan 09", note: "reset · +90d" },
+                    { d: "Dec 08", note: "reset · +90d" },
+                  ].map((r) => (
+                    <div
+                      key={r.d}
+                      className="flex items-center justify-between text-xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <HugeiconsIcon
+                          icon={CheckmarkCircle01Icon}
+                          size={14}
+                          className="text-brand-fg"
+                        />
+                        <span className="text-fg">{r.d}</span>
+                      </div>
+                      <span className="text-muted">{r.note}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </main>
       </div>
+    </div>
+  );
+}
+
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <span
+        className="h-1.5 w-1.5 rounded-full"
+        style={{ background: color }}
+      />
+      <span>{label}</span>
     </div>
   );
 }
