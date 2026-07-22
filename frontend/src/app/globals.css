@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
 :root {
+  /* Colors from Figma variable defs */
   --color-bg: #09090b;
   --color-fg: #fafafa;
+  --color-brand: #fdba74;              /* soft */
+  --color-brand-fg: #fb923c;           /* hot */
+  --color-muted: #a1a1aa;
+  --color-surface: rgba(250, 250, 250, 0.05);  /* card */
+  --color-border: rgba(255, 255, 255, 0.10);   /* border */
+  --color-wax: #f87171;
+  /* Aliases retained for existing pages */
   --color-accent: #fb923c;
   --color-accent-soft: #fdba74;
-  --color-muted: #a1a1aa;
-  --color-surface: #18181b;
-  --color-border: #27272a;
-  --color-wax: #f87171;
 }
 
 @theme inline {
   --color-bg: var(--color-bg);
   --color-fg: var(--color-fg);
+  --color-brand: var(--color-brand);
+  --color-brand-fg: var(--color-brand-fg);
   --color-accent: var(--color-accent);
   --color-accent-soft: var(--color-accent-soft);
   --color-muted: var(--color-muted);
   --color-surface: var(--color-surface);
   --color-border: var(--color-border);
   --color-wax: var(--color-wax);
-  --font-sans: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }
 
@@ -30,6 +36,35 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tab panel enter animation */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tab-panel {
+  animation: panel-in 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Figma glow tokens */
+.glow-brand-sm {
+  filter:
+    drop-shadow(0 0 64px var(--color-brand-fg))
+    drop-shadow(0 0 8px rgba(253, 186, 116, 0.5));
+}
+.glow-brand-lg {
+  filter:
+    drop-shadow(0 0 64px var(--color-brand-fg))
+    drop-shadow(0 0 48px var(--color-brand-fg))
+    drop-shadow(0 0 32px var(--color-brand-fg))
+    drop-shadow(0 0 8px rgba(253, 186, 116, 0.5));
 }
 
 .hero-heading {
@@ -96,22 +131,22 @@ body {
 
 .card {
   background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 146, 60, 0.10) 0%, rgba(251, 146, 60, 0) 60%),
-    #0d0d10;
-  border: 1px solid #1f1f24;
-  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1), border-color 300ms;
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 146, 60, 0.08) 0%, rgba(251, 146, 60, 0) 60%),
+    rgba(250, 250, 250, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 300ms;
+  backdrop-filter: blur(20px);
 }
 
 .card:hover {
-  transform: translateY(-3px);
-  border-color: #2f2f36;
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .card-glow {
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(251, 146, 60, 0.14) 0%, rgba(251, 146, 60, 0) 60%),
-    #0d0d10;
-  border: 1px solid #27272a;
+    rgba(250, 250, 250, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 .mention {
